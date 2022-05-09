@@ -1,18 +1,28 @@
-import express, { Request, Response ,Router}from 'express';
-import { ObjectId } from 'mongodb';
-import { Todo } from '../models/todo';
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = __importStar(require("express"));
 // import { getDb } from '../helpers/db_client';
-import { collections } from "../helpers/db_client";
-type RequestBody = { text: string };
-type RequestParams = { todoId: string };
-
-let todos: Todo[] = [];
-
-const router = Router();
-
-export const todosRouter = express.Router();
-
-todosRouter.use(express.json());
+const db_client_1 = require("../helpers/db_client");
+let todos = [];
+const router = express_1.Router();
+exports.todosRouter = express_1.default.Router();
+exports.todosRouter.use(express_1.default.json());
 // router.get('/', (req, res, next) => {
 //   res.status(200).json({ todos: todos });
 // });
@@ -25,18 +35,15 @@ todosRouter.use(express.json());
 //   );
 //   ctx.response.body = { todos: transformedTodos };
 // });
-
-todosRouter.get("/", async (_req: Request, res: Response) => {
-  try {
-    const tod = await collections.todos.find({}).toArray() ;
-
-
-      res.status(200).send(tod);
-  } catch (error:any) {
-      res.status(500).send(error.message);
-  }
-});
-
+exports.todosRouter.get("/", (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const tod = yield db_client_1.collections.todos.find({}).toArray();
+        res.status(200).send(tod);
+    }
+    catch (error) {
+        res.status(500).send(error.message);
+    }
+}));
 // router.post('/todo', (req, res, next) => {
 //   const body = req.body as RequestBody;
 //   const newTodo: Todo = {
@@ -45,10 +52,8 @@ todosRouter.get("/", async (_req: Request, res: Response) => {
 //   };
 //   console.log(newTodo)
 //   todos.push(newTodo);
-
 //   res.status(201).json({ message: 'Added Todo', todo: newTodo, todos: todos });
 // });
-
 // router.put('/todo/:todoId', (req, res, next) => {
 //   const params = req.params as RequestParams;
 //   const tid = params.todoId;
@@ -60,11 +65,9 @@ todosRouter.get("/", async (_req: Request, res: Response) => {
 //   }
 //   res.status(404).json({ message: 'Could not find todo for this id.' });
 // });
-
 // router.delete('/todo/:todoId', (req, res, next) => {
 //   const params = req.params as RequestParams;
 //   todos = todos.filter((todoItem) => todoItem.id !== params.todoId);
 //   res.status(200).json({ message: 'Deleted todo', todos: todos });
 // });
-
-export default router;
+exports.default = router;
