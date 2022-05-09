@@ -1,53 +1,97 @@
 import express, {Request, Response, Router} from 'express';
-import {Todo} from '../models/todo';
+import {Product} from '../models/todo';
 import {connectToDatabase,db} from "../helpers/db_client";
+import {ObjectId} from 'mongodb'
 
-type RequestBody = { text: string };
-type RequestParams = { todoId: string };
-
-let todos: Todo[] = [];
+let products: Product[] = [];
 const DB=db;
 const router = Router();
 
-export const todosRouter = express.Router();
+export const productsRouter = express.Router();
 
-todosRouter.use(express.json());
+productsRouter.use(express.json());
 
 
-todosRouter.get("/", async (_req: Request, res: Response) => {
+productsRouter.get("/", async (_req: Request, res: Response) => {
     try {
-        const tod = await connectToDatabase();
+        DB.collection('products')
+        .find()
+        .toArray()
+        .then(products => {
+          console.log(products);
 
-        res.status(200).send(tod);
+              res.status(200).send(products);
+        })
+       
+
+    
     } catch (error: any) {
         res.status(500).send(error.message);
     }
 });
 
-todosRouter.post('/', (req, res, next) => {
-    console.log('newTodo')
-  const body = req.body as RequestBody;
-  const newTodo: Todo = {
-    id: new Date().toISOString(),
-    text: body.text,
+productsRouter.post('/', (req, res, next) => {
+    
+  const body = req.body ;
+  const newProduct: Product = {
+   
+    title: body.title,
+    price: body.price,
+    description: body.description,
+    imageUrl: body.imageUrl,
   };
-DB.collection('todos').insertOne(newTodo)
-  console.log(newTodo)
-  todos.push(newTodo);
+  try{
+    DB.collection('products').insertOne(newProduct)
+  console.log(newProduct)
+  
 
-  res.status(201).json({ message: 'Added Todo', todo: newTodo, todos: todos });
+  res.status(201).json({ message: 'Added Product', Product: newProduct});
+      }
+  catch (error: any) {
+    res.status(500).send(error.message);
+}
 });
 
-router.post('/todo', (req, res, next) => {
-  const body = req.body as RequestBody;
-  const newTodo: Todo = {
-    id: new Date().toISOString(),
-    text: body.text,
+productsRouter.put('/', (req, res, next) => {
+ const body = req.body ;
+ const id= new ObjectId(body._id); 
+  const updatedProduct: Product = {
+  
+    title: body.title,
+    price: body.price,
+    description: body.description,
+    imageUrl: body.imageUrl,
   };
-  console.log(newTodo)
-  todos.push(newTodo);
+  try{
+    DB.collection('products')
+    .updateOne({ _id: id }, { $set: updatedProduct });
+  console.log(updatedProduct)
+  
 
-  res.status(201).json({ message: 'Added Todo', todo: newTodo, todos: todos });
+  res.status(201).json({ message: 'updated Product', Product: updatedProduct});
+      }
+  catch (error: any) {
+    res.status(500).send(error.message);
+}
 });
+
+productsRouter.delete('/', (req, res, next) => {
+  const body = req.body ;
+  const id= new ObjectId(body._id); 
+   
+   try{
+     DB.collection('products')
+     .deleteOne({ _id: id })
+   
+   
+ 
+   res.status(201).json({ message: 'Deleted Product'});
+       }
+   catch (error: any) {
+     res.status(500).send(error.message);
+ }
+ });
+
+
 
 export default router;

@@ -1,6 +1,6 @@
 import {MongoClient} from "mongodb";
-export const client = new MongoClient('mongodb+srv://nodeapp:nodeapp@cluster0.0sxot.mongodb.net/todo?retryWrites=true&w=majority');
-export const db = client.db('todo');
+export const client = new MongoClient('mongodb+srv://nodeapp:nodeapp@cluster0.0sxot.mongodb.net/shop?retryWrites=true&w=majority');
+export const db = client.db('shop');
 export const connectToDatabase = async () => {
    
 
@@ -8,7 +8,7 @@ export const connectToDatabase = async () => {
 
     
 
-    const todosCollection = db.collection('todos');
+    const todosCollection = db.collection('products');
     console.log(todosCollection);
 
     console.log(`Successfully connected to database: ${db.databaseName} and collection: ${todosCollection.collectionName}`);
