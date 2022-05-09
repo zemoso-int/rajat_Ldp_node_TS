@@ -1,16 +1,12 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 
-import todosRoutes from './routes/todos';
-import { connectToDatabase } from "./helpers/db_client"
-import {todosRouter} from "./routes/todos";
+import {todosRouter} from './routes/todos';
+import {connectToDatabase} from "./helpers/db_client"
+
 const app = express();
 
 app.use(bodyParser.json());
-
-// app.use(todosRoutes);
-
-// app.listen(3000);
 
 connectToDatabase()
     .then(() => {
