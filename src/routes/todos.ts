@@ -73,9 +73,10 @@ productsRouter.put('/',async (req, res, next) => {
 // }
 });
 
-productsRouter.delete('/',async (req, res, next) => {
+productsRouter.delete('/:id',async (req, res, next) => {
   const body = req.body ;
-  const id= new ObjectId(body._id); 
+  const params=req.params;
+  const id= new ObjectId(params.id); 
    
    
   await   DB.collection('products')
